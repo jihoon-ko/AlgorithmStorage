@@ -1,5 +1,18 @@
 namespace mathfunc{
   typedef long long LL;
+  LL powermod(LL n_,LL k_,LL m_){ // n^k mod m
+    LL res = 1, gop = n_%m_;
+    while(k_){
+      if(k_&1){
+        res *= gop;
+        res %= m_;
+      }
+      gop *= gop;
+      gop %= m;
+      k_ >>= 1;
+    }
+    return res;
+  }
   LL gcd(LL a_,LL b_){  //gcd(a,b)
     if(!b_) return a_;
     else return gcd(b_,a_%b_);
