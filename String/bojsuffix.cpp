@@ -3,10 +3,10 @@
 #include<algorithm>
 using namespace std;
 
-char want_str[500005];
+char want_str[1048576];
 
 namespace suffixary{
-    const int maxlogn = 19;
+    const int maxlogn = 20;
     int grp[maxlogn+2][(1 << maxlogn)];
     int lcp[1 << maxlogn];
     int sfxary[1 << maxlogn];
@@ -58,11 +58,12 @@ namespace suffixary{
 
 int main(){
     scanf("%s",want_str);
+    int len = (int)strlen(want_str);
     suffixary::getans();
-    for(int i=0;i<strlen(want_str);i++) printf("%d ",suffixary::sfxary[i]+1);
+
+    for(int i=0;i<len;i++) printf("%d ",suffixary::sfxary[i]+1);
     printf("\nx ");
-    for(int i=1;i<strlen(want_str);i++) printf("%d ",suffixary::lcp[i]);
-    printf("\n");
+    for(int i=1;i<len;i++) printf("%d ",suffixary::lcp[i]);
     /*
     for(int i=0;i<strlen(want_str);i++){
         printf("%s\n",want_str+suffixary::sfxary[i]);
