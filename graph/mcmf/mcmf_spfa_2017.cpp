@@ -4,10 +4,10 @@ using namespace std;
 #define inf 1000000000
 #define infll 1000000000000000000LL
 typedef int flow_t;
-typedef int cost_t;
+typedef long long cost_t;
 
 struct mincostmaxflow{
-    struct edge{ int from, to, flow, cost; };
+    struct edge{ int from, to; flow_t flow; cost_t cost; };
     int n;
     int source, sink;
     vector<edge> edges;
@@ -25,7 +25,7 @@ struct mincostmaxflow{
         prv.clear(); prv.resize(_n);
         table.clear(); table.resize(_n);
     }
-    void add(int from, int to, int flow, int cost){
+    void add(int from, int to, flow_t flow, cost_t cost){
         eg[from].push_back((int)edges.size());
         edges.push_back({from, to, flow, cost});
         eg[to].push_back((int)edges.size());
@@ -34,7 +34,7 @@ struct mincostmaxflow{
     pair<cost_t, flow_t> spfa(){
         for(int i=0;i<n;i++){
             inq[i] = false;
-            table[i] = {inf, 0};
+            table[i] = {infll, 0};
         }
         inq[source] = true;
         table[source] = {0, -inf};
