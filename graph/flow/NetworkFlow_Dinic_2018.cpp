@@ -3,11 +3,7 @@ using namespace std;
 
 #define inf 1000000000
 #define infll 1000000000000000000LL
-#define target (edges[i])
 typedef int flow_t;
-int d1[2001], d2[2001];
-int ans[2001][2001];
-int gae[2001];
 
 struct maxflow{
     maxflow(){}
@@ -42,6 +38,7 @@ struct maxflow{
         while(!q.empty()){
             int me = q.front(); q.pop();
             for(const int &i: eg[me]){
+                const edge &target = edges[i];
                 if(target.flow == 0) continue;
                 if(lvl[target.to]^inf) continue;
                 lvl[target.to] = lvl[me] + 1;
@@ -54,7 +51,8 @@ struct maxflow{
         if(x == sink) return lim;
         int used = 0;
         for(sv[x];sv[x]<eg[x].size();sv[x]++){
-            int i = eg[x][sv[x]];
+            const int &i = eg[x][sv[x]];
+            const edge &target = edges[i];
             if(target.flow == 0) continue;
             if(lvl[target.to] == lvl[x] + 1){
                 int able = min(lim - used, target.flow);
@@ -63,7 +61,7 @@ struct maxflow{
                     edges[i].flow -= res;
                     edges[i^1].flow += res;
                     used += res;
-                    if(res == able) return res;
+                    if(lim == used) return used;
                 }
             }
         }
@@ -81,3 +79,22 @@ struct maxflow{
         return ans;
     }
 };
+
+int main(){
+	maxflow mf=maxflow();
+	int n,m,aa,bb;
+	scanf("%d %d",&n,&m);
+	mf.init(n+m+2);
+	for(int i=1;i<=n;i++){
+		mf.add(0,i,2);
+		scanf("%d",&aa);
+		while(aa--){
+			scanf("%d",&bb);
+			mf.add(i,n+bb,1);
+		}
+	}
+	for(int i=n+1;i<=n+m;i++){
+		mf.add(i,n+m+1,1);
+	}
+	printf("%d\n",mf.exe(0,n+m+1));
+}
