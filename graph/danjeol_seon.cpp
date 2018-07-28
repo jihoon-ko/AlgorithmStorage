@@ -1,68 +1,49 @@
-#include<cstdio>
-#include<vector>
-#include<algorithm>
+#include<bits/stdc++.h>
 using namespace std;
 
-vector<int> lnk[100001];
-vector<int> tree[100001];
-vector< pair<int,int> > answers;
-int lvl[100001];
-int visited[100001];
-int without_me[100001];
-int la[100001];
+vector<int> g[100001];
+int vis[100001];
+int cnt = 0;
+vector< pair<int,int> > ans;
 
-void maketree(int x){
-    visited[x]=1;
-    for(int i=0;i<lnk[x].size();i++){
-        if(!visited[lnk[x][i]]){
-            lvl[lnk[x][i]]=lvl[x]+1;
-            tree[x].push_back(lnk[x][i]);
-            maketree(lnk[x][i]);
+int dfs(int x, int pp, bool root){
+    vis[x] = ++cnt;
+    int ret = vis[x];
+    int mn = vis[x];
+    for(int target: g[x]){
+        if(target == pp) continue;
+        if(vis[target]){
+            ret = min(ret, vis[target]);
+        }else{
+            int res = dfs(target, x, false);
+            mn = min(mn, res);
+            ret = min(ret, res);
         }
     }
-}
-
-void find_answer(int x){
-    without_me[x]=lvl[x]+1;
-    for(int i=0;i<tree[x].size();i++){
-        find_answer(tree[x][i]);
-        if(without_me[tree[x][i]]>lvl[x]&&la[tree[x][i]]==lvl[x]){
-            answers.push_back(make_pair(min(x,tree[x][i]),max(x,tree[x][i])));
+    if(!root){
+        if(ret >= vis[x]){
+            ans.push_back(min(make_pair(x, pp), make_pair(pp, x)));
         }
-        without_me[x]=min(without_me[x],la[tree[x][i]]);
+        return ret;
     }
-    la[x]=without_me[x];
-    for(int i=0;i<lnk[x].size();i++){
-        la[x]=min(la[x],lvl[lnk[x][i]]);
-    }
-    //printf("%d %d\n",without_me[x],la[x]);
 }
 
 int main(){
-    int n,m,aa,bb;
-    scanf("%d %d",&n,&m);
+    int n,m;
+    scanf("%d%d",&n,&m);
     for(int i=0;i<m;i++){
-        scanf("%d %d",&aa,&bb);
-        lnk[aa].push_back(bb);
-        lnk[bb].push_back(aa);
+        int aa,bb;
+        scanf("%d%d",&aa,&bb);
+        g[aa].push_back(bb); g[bb].push_back(aa);
     }
     for(int i=1;i<=n;i++){
-        if(!visited[i]) maketree(i);
-    }
-    /*
-    for(int i=1;i<=n;i++){
-        for(int j=0;j<tree[i].size();j++){
-            printf(",%d",tree[i][j]);
+        if(!vis[i]){
+            dfs(i, i, true);
         }
-        printf("\n");
     }
-    */
-    for(int i=1;i<=n;i++){
-        if(!lvl[i]) find_answer(i);
-    }
-    printf("%d\n",answers.size());
-    sort(answers.begin(),answers.end());
-    for(int i=0;i<answers.size();i++){
-        printf("%d %d\n",answers[i].first,answers[i].second);
-    }
+    sort(ans.begin(), ans.end());
+    printf("%u\n", ans.size());
+    for(auto &dap: ans) printf("%d %d\n", dap.first, dap.second);
+    printf("\n");
 }
+
